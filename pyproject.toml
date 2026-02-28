@@ -1,0 +1,18 @@
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+# E501 (line-too-long) is enforced by Black, not Ruff
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["shared", "core", "github_check"]
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

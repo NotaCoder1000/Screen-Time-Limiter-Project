@@ -1,5 +1,5 @@
 """
-uninstall.py — Removes Screen Limiter service and startup entry.
+uninstall.py — Removes Screen Limiter enforcer task and startup entry.
 Run as Administrator.
 """
 
@@ -19,11 +19,13 @@ PYTHON = sys.executable
 
 print("Uninstalling Screen Limiter…")
 
-# Stop and remove service
-service_script = os.path.join(SCRIPT_DIR, "service.py")
-subprocess.run([PYTHON, service_script, "stop"],   capture_output=True)
-subprocess.run([PYTHON, service_script, "remove"], capture_output=True)
-print("  ✓ Service removed.")
+# Kill enforcer process and remove the scheduled task
+subprocess.run(["taskkill", "/F", "/IM", "enforcer.exe"], capture_output=True)
+subprocess.run(["schtasks", "/Delete", "/TN", "ScreenLimiterMonitor", "/F"], capture_output=True)
+# Also remove any legacy Windows Service entry from older installs
+subprocess.run(["sc", "stop",   "ScreenLimiterSvc"], capture_output=True)
+subprocess.run(["sc", "delete", "ScreenLimiterSvc"], capture_output=True)
+print("  ✓ Enforcer stopped and scheduled task removed.")
 
 # Remove from startup
 try:

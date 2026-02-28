@@ -1,9 +1,9 @@
 """
-install.py — Setup wizard for Screen Limiter.
+install.py — Setup wizard for Screen Limiter (source/dev install).
 Run this ONCE (as Administrator) to:
   1. Install Python dependencies
   2. Walk through first-time configuration
-  3. Install and start the Windows Service
+  3. Register enforcer.py as a Task Scheduler task (runs at logon, elevated)
   4. Add the tray app to startup
 """
 
@@ -81,37 +81,40 @@ cfg["enabled"] = True
 save_config(cfg)
 print("  ✓ Configuration saved.\n")
 
-# ── Step 4: Install Windows Service ──────────────────────────────────────────
-print("[3/5] Installing Windows Service…")
-service_script = os.path.join(SCRIPT_DIR, "service.py")
+# ── Step 4: Register enforcer with Task Scheduler ────────────────────────────
+print("[3/5] Registering enforcer with Task Scheduler…")
+enforcer_script = os.path.join(SCRIPT_DIR, "enforcer.py")
 
-# Remove old service if it exists
-subprocess.run([PYTHON, service_script, "remove"], capture_output=True)
+# Remove any existing task from a previous install
+subprocess.run(
+    ["schtasks", "/Delete", "/TN", "ScreenLimiterMonitor", "/F"],
+    capture_output=True,
+)
 
+# Register: run at logon, highest privileges, in the interactive user session (/IT)
 result = subprocess.run(
-    [PYTHON, service_script, "install"],
-    capture_output=True, text=True
+    [
+        "schtasks", "/Create",
+        "/TN", "ScreenLimiterMonitor",
+        "/TR", f'"{PYTHON}" "{enforcer_script}"',
+        "/SC", "ONLOGON",
+        "/RL", "HIGHEST",
+        "/IT", "/F",
+    ],
+    capture_output=True, text=True,
 )
 if result.returncode != 0:
-    print("  ERROR installing service:")
-    print(result.stderr)
-    print(result.stdout)
+    print("  ERROR registering scheduled task:")
+    print(result.stderr or result.stdout)
     input("Press Enter to exit.")
     sys.exit(1)
 
-# Configure service to start automatically
+# Start it immediately (without waiting for next logon)
 subprocess.run(
-    ["sc", "config", "ScreenLimiterSvc", "start=", "auto"],
-    capture_output=True
+    ["schtasks", "/Run", "/TN", "ScreenLimiterMonitor"],
+    capture_output=True,
 )
-
-# Start service
-result = subprocess.run(
-    [PYTHON, service_script, "start"],
-    capture_output=True, text=True
-)
-print(f"  Service start: {result.stdout.strip() or 'OK'}")
-print("  ✓ Windows Service installed and started.\n")
+print("  ✓ Enforcer registered and started via Task Scheduler.\n")
 
 # ── Step 5: Add tray app to Windows startup ───────────────────────────────────
 print("[4/5] Adding tray app to Windows startup…")
@@ -146,7 +149,7 @@ print("=" * 60)
 print("  Setup complete!")
 print()
 print("  How it works:")
-print("  • A Windows Service (runs even without tray) watches for blocked apps")
+print("  • A background enforcer (Task Scheduler task, runs even without tray) watches for blocked apps")
 print("  • When you open a blocked app, it's paused and a popup appears")
 print("  • You must check off all assignments AND have a GitHub commit today")
 print("  • Weekends are automatically unlocked")

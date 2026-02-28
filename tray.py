@@ -8,13 +8,13 @@ import sys
 import os
 import subprocess
 import threading
-import datetime
 
 import pystray
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from shared import load_assignments, all_assignments_done, load_config, log
+from core import is_weekend
 
 # When frozen by PyInstaller, sys.executable is tray.exe itself.
 # Sibling exes live in the same directory.
@@ -50,7 +50,7 @@ def get_icon_image(status: str) -> Image.Image:
 
 def current_status() -> tuple[str, str]:
     """Returns (status_key, tooltip_text)."""
-    if datetime.date.today().weekday() >= 5:
+    if is_weekend():
         return "weekend", "Screen Limiter — Weekend, all apps unlocked"
 
     cfg = load_config()

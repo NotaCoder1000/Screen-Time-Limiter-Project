@@ -74,21 +74,21 @@ Section "Screen Limiter" SecMain
     SetOutPath "$INSTDIR"
 
     ; Copy all bundled exes
-    File "${DIST_DIR}\service.exe"
+    File "${DIST_DIR}\enforcer.exe"
     File "${DIST_DIR}\popup.exe"
     File "${DIST_DIR}\tray.exe"
     File "${DIST_DIR}\main.exe"
 
-    ; Stop and remove any existing service
+    ; Stop and remove any existing service or task from older installs
     ExecWait 'sc stop "${SERVICE_NAME}"'
     ExecWait 'sc delete "${SERVICE_NAME}"'
+    ExecWait 'schtasks /Delete /TN "ScreenLimiterMonitor" /F'
     Sleep 1500
 
-    ; Register as a scheduled task running at logon with elevated privileges.
-    ; service.exe is NOT a Windows Service (no ServiceMain/SCM handshake), so
-    ; sc.exe registration causes SCM to kill it after 30 s with error 1053.
-    ; Task Scheduler with /RL HIGHEST runs it elevated without that requirement.
-    ExecWait 'schtasks /Create /TN "ScreenLimiterMonitor" /TR "\"$INSTDIR\service.exe\"" /SC ONLOGON /RL HIGHEST /IT /F'
+    ; Register enforcer.exe as a scheduled task running at logon with elevated privileges.
+    ; enforcer.exe is NOT a Windows Service (no ServiceMain/SCM handshake), so
+    ; Task Scheduler with /RL HIGHEST runs it elevated without the SCM 30-second timeout.
+    ExecWait 'schtasks /Create /TN "ScreenLimiterMonitor" /TR "\"$INSTDIR\enforcer.exe\"" /SC ONLOGON /RL HIGHEST /IT /F'
     ExecWait 'schtasks /Run /TN "ScreenLimiterMonitor"'
 
     ; Add tray to startup for current user
@@ -129,9 +129,9 @@ SectionEnd
 Section "Uninstall"
 
     ; Stop the monitor process and remove the scheduled task
-    ExecWait 'taskkill /F /IM service.exe'
+    ExecWait 'taskkill /F /IM enforcer.exe'
     ExecWait 'schtasks /Delete /TN "ScreenLimiterMonitor" /F'
-    ; Also clean up any old service entry
+    ; Also clean up any old Windows Service entry from previous installs
     ExecWait 'sc stop "${SERVICE_NAME}"'
     ExecWait 'sc delete "${SERVICE_NAME}"'
     Sleep 500
@@ -154,7 +154,7 @@ Section "Uninstall"
     RMDir /r "$APPDATA\ScreenLimiter"
 
     ; Delete installed files and folder
-    Delete "$INSTDIR\service.exe"
+    Delete "$INSTDIR\enforcer.exe"
     Delete "$INSTDIR\popup.exe"
     Delete "$INSTDIR\tray.exe"
     Delete "$INSTDIR\main.exe"

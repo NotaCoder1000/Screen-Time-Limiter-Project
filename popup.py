@@ -13,7 +13,6 @@ Usage (called by the service):
 
 import sys
 import os
-import datetime
 import threading
 import tkinter as tk
 from tkinter import font as tkfont
@@ -23,6 +22,7 @@ import customtkinter as ctk
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from shared import load_assignments, save_assignments, all_assignments_done, load_config, log
 from github_check import has_commit_today
+from core import is_weekend
 
 # ── Appearance ─────────────────────────────────────────────────────────────────
 ctk.set_appearance_mode("dark")
@@ -221,8 +221,7 @@ class InterceptPopup(ctk.CTk):
         threading.Thread(target=self._github_check_thread, daemon=True).start()
 
     def _github_check_thread(self):
-        is_weekend = datetime.date.today().weekday() >= 5
-        if is_weekend:
+        if is_weekend():
             ok, reason = True, "Weekend — GitHub check skipped ✓"
         else:
             ok, reason = has_commit_today()

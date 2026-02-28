@@ -11,7 +11,7 @@ Requirements:
 
 Output:
     dist\ScreenLimiter\
-        service.exe  — Background monitor (console, needs to call win32 APIs)
+        enforcer.exe — Background monitor (console, needs to call win32 APIs)
         popup.exe    — Interception popup (windowed, no console)
         tray.exe     — System tray icon  (windowed, no console)
         main.exe     — Combined control panel UI (windowed)
@@ -30,10 +30,10 @@ DIST_DIR = os.path.join(ROOT, "dist", "ScreenLimiter")
 # windowed=True  → no console window  (--noconsole)
 # windowed=False → console app        (needed for the service)
 TARGETS = [
-    ("service.py", "service", False),
-    ("popup.py",   "popup",   True),
-    ("tray.py",    "tray",    True),
-    ("main_ui.py", "main",    True),
+    ("enforcer.py", "enforcer", False),
+    ("popup.py",    "popup",    True),
+    ("tray.py",     "tray",     True),
+    ("main_ui.py",  "main",     True),
 ]
 
 # ── Hidden imports required by each module ─────────────────────────────────────
