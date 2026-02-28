@@ -51,7 +51,7 @@ You double-click chrome.exe
          ↓
 Windows Service detects it instantly (WMI event)
          ↓
-chrome.exe is SUSPENDED (it can't run anything)
+example.exe is SUSPENDED (it can't run anything)
          ↓
 Popup window appears with your assignment checklist
          ↓
@@ -59,8 +59,8 @@ You tick all assignments → click Confirm
          ↓
 GitHub API is checked for a commit today
          ↓
-Pass ✓ → chrome.exe resumes normally
-Fail ✗ → chrome.exe is killed
+Pass ✓ → example.exe resumes normally
+Fail ✗ → example.exe is killed
 ```
 
 ---
