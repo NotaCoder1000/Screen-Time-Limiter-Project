@@ -11,7 +11,7 @@
 ; ============================================================
 
 !define APP_NAME      "Screen Limiter"
-!define APP_VERSION   "1.0.0"
+!define APP_VERSION   "1.1.0"
 !define APP_PUBLISHER "You"
 !define APP_URL       "https://github.com"
 !define SERVICE_NAME  "ScreenLimiterSvc"

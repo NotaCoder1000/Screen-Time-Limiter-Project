@@ -131,19 +131,19 @@ def pyinstaller_cmd(script: str, name: str, windowed: bool) -> list[str]:
 
 def main():
     print("=" * 60)
-    print("  Screen Limiter — PyInstaller build")
+    print("  Screen Limiter - PyInstaller build")
     print("=" * 60)
 
     # Clean previous dist output for our app (leave other dist folders alone)
     if os.path.isdir(DIST_DIR):
-        print(f"\nCleaning {DIST_DIR} …")
+        print(f"\nCleaning {DIST_DIR}...")
         shutil.rmtree(DIST_DIR)
     os.makedirs(DIST_DIR, exist_ok=True)
 
     for script, name, windowed in TARGETS:
-        print(f"\n{'─'*60}")
+        print(f"\n{'-'*60}")
         print(f"  Building {name}.exe  ({'windowed' if windowed else 'console'})")
-        print(f"{'─'*60}")
+        print(f"{'-'*60}")
         run(pyinstaller_cmd(script, name, windowed))
 
     # Clean up PyInstaller work folder
