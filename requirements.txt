@@ -1,0 +1,8 @@
+pywin32==306
+requests==2.31.0
+urllib3==1.26.18
+pystray==0.19.5
+Pillow==10.2.0
+wmi==1.5.1
+bcrypt==4.1.2
+customtkinter==5.2.2

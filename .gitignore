@@ -1,0 +1,17 @@
+# Compiled / build output
+dist/
+build/
+*.exe
+*.pyc
+__pycache__/
+*.spec
+
+# Temp / debug files
+start
+query
+
+# PyInstaller
+*.manifest
+
+# Secrets / local config (config.json lives in AppData, not here, but just in case)
+config.json
