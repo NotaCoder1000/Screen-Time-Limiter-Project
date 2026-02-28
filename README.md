@@ -11,22 +11,21 @@ Weekends are automatically unlocked. The blocker runs as a **Windows Service** s
 ## Requirements
 
 - Windows 10/11
-- Python 3.10+ — https://python.org (check "Add to PATH" during install)
 - A GitHub account
 
 ---
 
 ## Installation
 
-1. **Download / copy this entire folder** somewhere permanent (e.g. `C:\Tools\ScreenLimiter`)
-2. **Right-click `install.py` → Run as administrator**
-3. Follow the wizard — it will ask for:
+1. **Download `ScreenLimiter-Setup.exe`** from the [Releases](../../releases) page
+2. **Right-click → Run as administrator**
+3. Follow the installer wizard — once it finishes, the first-run setup window opens automatically and asks for:
    - Your GitHub username
    - A GitHub Personal Access Token *(optional, but enables private repo commit detection)*
    - Which apps to block (enter `.exe` names — find them in Task Manager → Details tab)
    - An **admin password** to protect settings
 
-That's it. The service starts immediately and a tray icon appears.
+That's it. The service starts immediately and a tray icon appears in the system tray.
 
 ---
 
@@ -99,17 +98,14 @@ Right-click tray → **Settings** to change:
 
 | File | Purpose |
 |------|---------|
-| `install.py` | One-time setup wizard (run as admin) |
-| `service.py` | Windows Service — the core enforcer |
-| `popup.py` | Interception popup shown when blocked app launches |
-| `assignments_ui.py` | Assignment list manager |
-| `settings_ui.py` | Password-protected settings panel |
-| `tray.py` | System tray icon |
-| `shared.py` | Shared config/state helpers |
-| `github_check.py` | GitHub commit checker |
-| `uninstall.py` | Remove everything (run as admin) |
+| `service.exe` | Windows Service — the core enforcer |
+| `popup.exe` | Interception popup shown when blocked app launches |
+| `tray.exe` | System tray icon |
+| `main.exe` | Main UI (assignments, blocked apps, admin settings) |
 
 Config and data are stored in: `%APPDATA%\ScreenLimiter\`
+
+> **Developers:** See `BUILDING.md` for instructions on building from source.
 
 ---
 
@@ -125,4 +121,4 @@ This is intentionally harder to bypass than a simple user-space script, but dete
 
 ## Uninstall
 
-Run `uninstall.py` as Administrator, then delete the folder.
+Open **Settings → Apps** (or **Control Panel → Programs and Features**), find **Screen Limiter**, and click **Uninstall**. The wizard will stop and remove the service automatically.
